@@ -1,3 +1,7 @@
-The purpose of this project is to create database representations of various Japanese-English dictionaries that are provided as XML files.
+The purpose of this project is to create database representations of various
+Japanese-English dictionaries that are provided as XML files.
 
-The dictionaries used are the work of Jim Breen (http://www.csse.monash.edu.au/~jwb/japanese.html). Presently, KANJIDIC2 and JMdict are supported by this project. JMnedict (Japanese Proper Names Dictionary) will be added soon.
+The dictionaries used are the work of Jim Breen
+(http://www.csse.monash.edu.au/~jwb/japanese.html). Presently, KANJIDIC2 and
+JMdict are supported by this project. JMnedict (Japanese Proper Names
+Dictionary) will be added soon.

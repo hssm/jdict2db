@@ -2,29 +2,35 @@
 #Copyright (C) 2011 Houssam Salem <ntsp.gm@gmail.com>
 #License: GPLv3; http://www.gnu.org/licenses/gpl.txt
 
-import os
 import unittest
 from sqlalchemy.sql import select
 from sqlalchemy import create_engine
 from jdict2db.kanjidic import *
 
+TEST_DIR = 'test_dbs'
+TEST_DB_NAME = 'kanjidic2.sqlite'
+TEST_DB_PATH = os.path.join(TEST_DIR, TEST_DB_NAME)
+CONNECT_STRING = 'sqlite:///' + TEST_DB_PATH
 
 #Set this to True to create a database which will be reused in future tests
 #while kept True. You'll have to delete it manually from the test_dbs folder
 #if you need to rebuild it.
 reuse_db = False
 
+if not os.path.isdir(TEST_DIR):
+    os.makedirs(TEST_DIR)
+
 if reuse_db:
-    if not os.path.exists('test_dbs/kanjidic.sqlite'):
-        fill_database('../data/kanjidic2.xml',
-                         'sqlite:///test_dbs/kanjidic.sqlite')
-        from jdict2db.kanjidic import conn
-    else:
-        conn = create_engine('sqlite:///test_dbs/kanjidic.sqlite',
-                              echo=False)
+    if not os.path.exists(TEST_DB_PATH):
+        fill_database('../data/kanjidic2.xml', CONNECT_STRING)
+    conn = create_engine(CONNECT_STRING)
 else:
-    fill_database('../data/kanjidic2.xml', 'sqlite:///') #in-memory db
-    from jdict2db.kanjidic import conn
+    try:
+        os.remove(TEST_DB_PATH)
+    except:
+        pass
+    fill_database('../data/kanjidic2.xml', CONNECT_STRING)
+    conn = create_engine(CONNECT_STRING, echo=False)
 
 
 class TestKanjidicEntries(unittest.TestCase):

@@ -7,6 +7,7 @@ import time
 from xml.etree.cElementTree import iterparse
 from sqlalchemy import create_engine, Table, Column, Integer, String, Unicode,\
                        ForeignKey, MetaData
+import jdict2db.download
 
 metadata = MetaData()
 engine = None
@@ -242,20 +243,20 @@ def fill_database(kanjidic_path='data/kanjidic2.xml', db_path=None):
         db_path = 'sqlite:///kanjidic.sqlite'
     
     global conn
-    try:
-        engine = create_engine(db_path, echo=False)
-    except:
-        print "Error creating or opening database: %s" % db_path
-        return
 
-
+    if not os.path.exists(kanjidic_path):
+        print "kanjidic2.xml not found. Downloading..."
+        jdict2db.download.download_kanjidic2()
+                
+    engine = create_engine(db_path, echo=False)
+    f = open(kanjidic_path)    
     metadata.create_all(engine)
-    conn = engine.connect()
-    f = open(kanjidic_path)
+    conn = engine.connect()    
     
+    print "Filling database with KANJIDIC2 data. This takes about 8 seconds."
     start = time.time()
     
-    #Call save_all() after n_to_save elements. Slight speed up
+    #Call save_all() after n_to_save elements. Slight speedup
     n_to_save = 5000
     save_now = 0
     for event, elem in iterparse(f):
@@ -291,4 +292,8 @@ def fill_database(kanjidic_path='data/kanjidic2.xml', db_path=None):
 
     print 'Filling database with kanjidic data took '\
           ' %s seconds' % (time.time() - start)
+    f.close()
+    conn.close()
 
+if __name__ == '__main__':
+    fill_database('../data/kanjidic2.xml', 'sqlite:///')

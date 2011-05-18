@@ -5,9 +5,9 @@
 import os
 import time
 from xml.etree.cElementTree import iterparse
-
 from sqlalchemy import create_engine, Table, Column, Integer, String, Unicode,\
                        Boolean, ForeignKey, MetaData
+import jdict2db.download
 
 metadata = MetaData()
 engine = None
@@ -388,16 +388,17 @@ def fill_database(jmdict_path='data/JMdict', db_path=None):
         db_path = 'sqlite:///jmdict.sqlite'
     
     global conn
-    try:
-        engine = create_engine(db_path, echo=False)
-    except:
-        print "Error creating or opening database: %s" % db_path
-        return
+
+    if not os.path.exists(jmdict_path):
+        print "JMdict not found. Downloading..."
+        jdict2db.download.download_jmdict()
         
+    engine = create_engine(db_path, echo=False)
+    f = open(jmdict_path)
     metadata.create_all(engine)
     conn = engine.connect()
-    f = open(jmdict_path)
-
+    
+    print "Filling database with JMdict data. This takes about 35 seconds."
     start = time.time()
     
     #Primary keys of tables that are used as foreign keys by sub-element
@@ -444,3 +445,8 @@ def fill_database(jmdict_path='data/JMdict', db_path=None):
     
     print 'Filling database with jmdict data took '\
           '%s seconds' % (time.time() - start)
+    f.close()
+    conn.close()
+    
+if __name__ == '__main__':
+    fill_database('../data/JMdict','sqlite:///')

@@ -58,23 +58,19 @@ class TestKanjidicEntries(unittest.TestCase):
         self.m_check_matches(k_ele, 'entry_ent_seq', ent_seq, 4, expect)
         
         inf_n = [0, 1, 0, 2]
-        inf_expect = [
-                      [],
+        inf_expect = [[],
                       [{'ke_inf':'irregular okurigana usage'}],
                       [{}],
                       [{'ke_inf':'irregular okurigana usage'},
-                       {'ke_inf':'word containing out-dated kanji'}]
-                      ]
+                       {'ke_inf':'word containing out-dated kanji'}]]
         
         pri_n = [3, 0, 0, 0]
-        pri_expect = [
-                      [{'ke_pri':'ichi1'},
+        pri_expect = [[{'ke_pri':'ichi1'},
                        {'ke_pri':'news1'},
                        {'ke_pri':'nf12'}],
                       [{}],
                       [{}],
-                      [{}]
-                      ]
+                      [{}]]
         
         for (i, row) in enumerate(rows):
             self.m_check_matches(ke_inf, 'k_ele_id', row.id, inf_n[i],
@@ -98,20 +94,16 @@ class TestKanjidicEntries(unittest.TestCase):
         self.m_check_matches(r_ele, 'entry_ent_seq', ent_seq, 3, expect)
         
         pri_n = [3, 1, 0]
-        pri_expect = [
-                      [{'re_pri':'ichi1'},
+        pri_expect = [[{'re_pri':'ichi1'},
                        {'re_pri':'news2'},
                        {'re_pri':'nf36'}],
                       [{'re_pri':'gai1'}],
-                      [{}]
-                      ]
+                      [{}]]
         
         restr_n = [0, 0, 1]
-        restr_expect = [
-                      [{}],
-                      [{}],
-                      [{'re_restr':'芥'}]
-                      ]
+        restr_expect = [[{}],
+                        [{}],
+                        [{'re_restr':'芥'}]]
         
         for (i, row) in enumerate(rows):
             self.m_check_matches(re_pri, 'r_ele_id', row.id, pri_n[i],
@@ -127,20 +119,16 @@ class TestKanjidicEntries(unittest.TestCase):
         rows = result.fetchall()        
         
         expect = [{'reb':'シャン', 're_nokanji':False},
-                  {'reb':'シヤン', 're_nokanji':False},]
+                  {'reb':'シヤン', 're_nokanji':False}]
         self.m_check_matches(r_ele, 'entry_ent_seq', ent_seq, 2, expect)
         
         pri_n = [1, 0]
-        pri_expect = [
-                      [{'re_pri':'gai1'},],
-                      [{}]
-                     ]
+        pri_expect = [[{'re_pri':'gai1'},],
+                      [{}]]
         
         inf_n = [0, 1]
-        inf_expect = [
-                      [{}],
-                      [{'re_inf':'word containing irregular kana usage'}],
-                      ]
+        inf_expect = [[{}],
+                      [{'re_inf':'word containing irregular kana usage'}]]
         
         for (i, row) in enumerate(rows):
             self.m_check_matches(re_pri, 'r_ele_id', row.id, pri_n[i],
@@ -202,11 +190,9 @@ class TestKanjidicEntries(unittest.TestCase):
                         len(rows))
         
         stagr_n = [2, 2, 0]
-        stagr_expect = [
+        stagr_expect = [[{'stagr':'あずさ'},{'stagr':'アズサ'}],
                         [{'stagr':'あずさ'},{'stagr':'アズサ'}],
-                        [{'stagr':'あずさ'},{'stagr':'アズサ'}],
-                        []
-                       ]
+                        []]
         for (i, row) in enumerate(rows):
             self.m_check_matches(stagr, 'sense_id', row.id, stagr_n[i],
                                  stagr_expect[i])
@@ -260,8 +246,7 @@ class TestKanjidicEntries(unittest.TestCase):
                         len(rows))
         sense_id = rows[0].id   #no misc in other two
         expect = [{'misc':'word usually written using kana alone'},
-                  {'misc':'honorific or respectful (sonkeigo) language'}
-                 ]
+                  {'misc':'honorific or respectful (sonkeigo) language'}]
         self.m_check_matches(misc, 'sense_id', sense_id, 2, expect)
         
     def test_s_inf(self):
@@ -271,12 +256,10 @@ class TestKanjidicEntries(unittest.TestCase):
         self.assertTrue(len(rows) == 4, "Expected 4 sense rows but found %s " %
                         len(rows))
         n = [1, 0, 1, 1]
-        expect = [
-                        [{'s_inf':'usu. お姉さん'}],
-                        [],
-                        [{'s_inf':'usu. お姐さん'}],
-                        [{'s_inf':'usu. お姐さん'}],
-                       ]
+        expect = [[{'s_inf':'usu. お姉さん'}],
+                  [],
+                  [{'s_inf':'usu. お姐さん'}],
+                  [{'s_inf':'usu. お姐さん'}]]
         for (i, row) in enumerate(rows):
             self.m_check_matches(s_inf, 'sense_id', row.id, n[i], expect[i])
     
@@ -319,17 +302,15 @@ class TestKanjidicEntries(unittest.TestCase):
         self.assertTrue(len(rows) == 2, "Expected 2 sense rows but found %s " %
                         len(rows))
         n = [7, 2]
-        expect = [
-                 [{'gloss':'always', 'lang':'eng', 'g_gend':None},
-                  {'gloss':'usually', 'lang':'eng', 'g_gend':None},
-                  {'gloss':'every time', 'lang':'eng', 'g_gend':None},
-                  {'gloss':'à chaque fois', 'lang':'fre', 'g_gend':None},
-                  {'gloss':'(nég) jamais', 'lang':'fre', 'g_gend':None},
-                  {'gloss':'habituellement', 'lang':'fre', 'g_gend':None},
-                  {'gloss':'toujours', 'lang':'fre', 'g_gend':None}],
-                 [{'gloss':'never (with neg. verb)', 'lang':'eng', 'g_gend':None},
-                  {'gloss':'(n) immer', 'lang':'ger', 'g_gend':None}],
-                 ]
+        expect = [[{'gloss':'always', 'lang':'eng', 'g_gend':None},
+                   {'gloss':'usually', 'lang':'eng', 'g_gend':None},
+                   {'gloss':'every time', 'lang':'eng', 'g_gend':None},
+                   {'gloss':'à chaque fois', 'lang':'fre', 'g_gend':None},
+                   {'gloss':'(nég) jamais', 'lang':'fre', 'g_gend':None},
+                   {'gloss':'habituellement', 'lang':'fre', 'g_gend':None},
+                   {'gloss':'toujours', 'lang':'fre', 'g_gend':None}],
+                  [{'gloss':'never (with neg. verb)', 'lang':'eng', 'g_gend':None},
+                   {'gloss':'(n) immer', 'lang':'ger', 'g_gend':None}]]
         for (i, row) in enumerate(rows):
             self.m_check_matches(gloss, 'sense_id', row.id, n[i], expect[i])
         

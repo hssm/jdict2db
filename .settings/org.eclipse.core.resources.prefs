@@ -1,5 +1,6 @@
-#Tue May 17 06:57:41 EST 2011
+#Wed May 18 22:27:32 EST 2011
 eclipse.preferences.version=1
+encoding//jdict2db/download.py=utf-8
 encoding//jdict2db/jmdict.py=utf-8
 encoding//jdict2db/kanjidic.py=utf-8
 encoding//tests/test_jmdict.py=utf-8

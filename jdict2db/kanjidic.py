@@ -291,3 +291,4 @@ def fill_database(kanjidic_path='data/kanjidic2.xml', db_path=None):
 
     print 'Filling database with kanjidic data took '\
           ' %s seconds' % (time.time() - start)
+

@@ -6,10 +6,10 @@ import urllib2
 import os
 import gzip
 
-#JMDICT_URL = 'http://ftp.monash.edu.au/pub/nihongo/JMdict.gz'
-#KANJIDIC2_URL = 'http://ftp.monash.edu.au/pub/nihongo/kanjidic2.xml.gz'
-KANJIDIC2_URL = 'http://localhost:7654/kanjidic2.xml.gz'
-JMDICT_URL = 'http://localhost:7654/JMdict.gz'
+JMDICT_URL = 'http://ftp.monash.edu.au/pub/nihongo/JMdict.gz'
+KANJIDIC2_URL = 'http://ftp.monash.edu.au/pub/nihongo/kanjidic2.xml.gz'
+#KANJIDIC2_URL = 'http://localhost:7654/kanjidic2.xml.gz'
+#JMDICT_URL = 'http://localhost:7654/JMdict.gz'
 
 def download_jmdict():
     """Download and extract JMdict from the Monash FTP server."""
@@ -81,4 +81,4 @@ def download_kanjidic2():
 
 if __name__ == '__main__':    
     download_kanjidic2()
-    #download_jmdict()
+    download_jmdict()

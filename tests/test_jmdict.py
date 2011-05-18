@@ -15,21 +15,21 @@ CONNECT_STRING = 'sqlite:///' + TEST_DB_PATH
 #Set this to True to create a database which will be reused in future tests
 #while kept True. You'll have to delete it manually from the test_dbs folder
 #if you need to rebuild it.
-reuse_db = True
+reuse_db = False
 
 if not os.path.isdir(TEST_DIR):
     os.makedirs(TEST_DIR)
 
 if reuse_db:
     if not os.path.exists(TEST_DB_PATH):
-        fill_database('../data/JMdict', CONNECT_STRING)
+        fill_database(CONNECT_STRING)
     conn = create_engine(CONNECT_STRING)
 else:
     try:
         os.remove(TEST_DB_PATH)
     except:
         pass
-    fill_database('../data/JMdict', CONNECT_STRING)
+    fill_database(CONNECT_STRING)
     conn = create_engine(CONNECT_STRING, echo=False)
 
 class TestKanjidicEntries(unittest.TestCase):

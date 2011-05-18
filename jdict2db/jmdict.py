@@ -3,11 +3,14 @@
 #License: GPLv3; http://www.gnu.org/licenses/gpl.txt
 
 import os
+import sys
 import time
 from xml.etree.cElementTree import iterparse
 from sqlalchemy import create_engine, Table, Column, Integer, String, Unicode,\
                        Boolean, ForeignKey, MetaData
-import jdict2db.download
+import download
+
+JMDICT_PATH = '../data/JMdict'
 
 metadata = MetaData()
 engine = None
@@ -372,33 +375,21 @@ def parse_sense(ent_seq, sense_pk, node):
     sense_l.append({'entry_ent_seq': ent_seq})
     
     
-def fill_database(jmdict_path='data/JMdict', db_path=None):
-    """Fill the supplied database with jmdict data, using the given jmdict xml
-    file.
-    
-    If db_path is None, an SQLite database named 'jmdict.sqlite' is dumped in
-    the working directory, overwriting any existing files named 'jmdict.sqlite'.
-    """
-    
-    if db_path is None:
-        print 'Database path not specified. Creating new database here.'
-        if os.path.exists('jmdict.sqlite'):
-            print 'Overwriting existing database named jmdict.sqlite'
-            os.remove('jmdict.sqlite')
-        db_path = 'sqlite:///jmdict.sqlite'
+def fill_database(db_path):
+    """Fill the supplied database with jmdict data."""
     
     global conn
 
-    if not os.path.exists(jmdict_path):
+    if not os.path.exists(JMDICT_PATH):
         print "JMdict not found. Downloading..."
-        jdict2db.download.download_jmdict()
+        download.download_jmdict()
         
     engine = create_engine(db_path, echo=False)
-    f = open(jmdict_path)
+    f = open(JMDICT_PATH)
     metadata.create_all(engine)
     conn = engine.connect()
     
-    print "Filling database with JMdict data. This takes about 35 seconds."
+    print "Filling database with JMdict data. This takes about 35 seconds..."
     start = time.time()
     
     #Primary keys of tables that are used as foreign keys by sub-element
@@ -443,10 +434,20 @@ def fill_database(jmdict_path='data/JMdict', db_path=None):
     n_to_commit = 0
     save_all()
     
-    print 'Filling database with jmdict data took '\
+    print 'Filling database with JMdict data took '\
           '%s seconds' % (time.time() - start)
+    print "Done."
     f.close()
     conn.close()
     
 if __name__ == '__main__':
-    fill_database('../data/JMdict','sqlite:///')
+    if len(sys.argv) > 1:
+        db_url = sys.argv[1]
+        fill_database(db_url)
+    else:
+        print 'Database url not specified. Creating new SQLite database'\
+        ', "jmdict.sqlite", here.'
+        if os.path.exists('jmdict.sqlite'):
+            print 'Overwriting existing database named jmdict.sqlite'
+            os.remove('jmdict.sqlite')
+        fill_database('sqlite:///jmdict.sqlite')

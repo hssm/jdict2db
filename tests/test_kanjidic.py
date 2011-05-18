@@ -22,14 +22,14 @@ if not os.path.isdir(TEST_DIR):
 
 if reuse_db:
     if not os.path.exists(TEST_DB_PATH):
-        fill_database('../data/kanjidic2.xml', CONNECT_STRING)
+        fill_database(CONNECT_STRING)
     conn = create_engine(CONNECT_STRING)
 else:
     try:
         os.remove(TEST_DB_PATH)
     except:
         pass
-    fill_database('../data/kanjidic2.xml', CONNECT_STRING)
+    fill_database(CONNECT_STRING)
     conn = create_engine(CONNECT_STRING, echo=False)
 
 

@@ -4,10 +4,13 @@
 
 import os
 import time
+import sys
 from xml.etree.cElementTree import iterparse
 from sqlalchemy import create_engine, Table, Column, Integer, String, Unicode,\
                        ForeignKey, MetaData
-import jdict2db.download
+import download
+
+KANJIDIC2_PATH = '../data/kanjidic2.xml'
 
 metadata = MetaData()
 engine = None
@@ -226,30 +229,17 @@ def parse_codepoint(literal, node):
                             'cp_value':c.text,
                             'cp_type':c.get("cp_type")})
 
-def fill_database(kanjidic_path='data/kanjidic2.xml', db_path=None):
-    """Fill the supplied database with kanjidic data, using the given kanjidic
-    xml file.
-    
-    If db_path is None, an SQLite database named 'kanjidic.sqlite' is dumped
-    in the working directory, overwriting any existing files named
-    'kanjidic.sqlite'.
-    """
-    
-    if db_path is None:
-        print 'Database path not specified. Creating new database here.'
-        if os.path.exists('kanjidic.sqlite'):
-            print 'Overwriting existing database named kanjidic.sqlite'
-            os.remove('kanjidic.sqlite')
-        db_path = 'sqlite:///kanjidic.sqlite'
+def fill_database(db_path=None):
+    """Fill the supplied database with kanjidic data."""
     
     global conn
 
-    if not os.path.exists(kanjidic_path):
+    if not os.path.exists(KANJIDIC2_PATH):
         print "kanjidic2.xml not found. Downloading..."
-        jdict2db.download.download_kanjidic2()
+        download.download_kanjidic2()
                 
     engine = create_engine(db_path, echo=False)
-    f = open(kanjidic_path)    
+    f = open(KANJIDIC2_PATH)    
     metadata.create_all(engine)
     conn = engine.connect()    
     
@@ -290,10 +280,20 @@ def fill_database(kanjidic_path='data/kanjidic2.xml', db_path=None):
     n_to_commit = 0
     save_all()
 
-    print 'Filling database with kanjidic data took '\
+    print 'Filling database with KANJIDIC12 data took '\
           ' %s seconds' % (time.time() - start)
+    print "Done."
     f.close()
     conn.close()
 
 if __name__ == '__main__':
-    fill_database('../data/kanjidic2.xml', 'sqlite:///')
+    if len(sys.argv) > 1:
+        db_url = sys.argv[1]
+        fill_database(db_url)
+    else:
+        print 'Database url not specified. Creating new SQLite database'\
+        ', "kanjidic.sqlite", here.'
+        if os.path.exists('kanjidic.sqlite'):
+            print 'Overwriting existing database named kanjidic.sqlite'
+            os.remove('kanjidic.sqlite')
+        fill_database('sqlite:///kanjidic.sqlite')

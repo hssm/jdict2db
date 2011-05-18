@@ -10,7 +10,7 @@ from jdict2db.kanjidic import *
 
 
 #Set this to True to create a database which will be reused in future tests
-#while kept True You'll have to delete it manually from the test_dbs folder
+#while kept True. You'll have to delete it manually from the test_dbs folder
 #if you need to rebuild it.
 reuse_db = False
 

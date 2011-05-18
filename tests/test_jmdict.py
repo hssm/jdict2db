@@ -10,9 +10,9 @@ from jdict2db.jmdict import *
  
 
 #Set this to True to create a database which will be reused in future tests
-#while kept True You'll have to delete it manually from the test_dbs folder
+#while kept True. You'll have to delete it manually from the test_dbs folder
 #if you need to rebuild it.
-reuse_db = True
+reuse_db = False
 
 if reuse_db:
     if not os.path.exists('test_dbs/test_jmdict.sqlite'):
@@ -54,7 +54,7 @@ class TestKanjidicEntries(unittest.TestCase):
         expect = [{'keb':'隠す'},
                   {'keb':'隠くす'},
                   {'keb':'匿す'},
-                  {'keb':'隱くす'},]
+                  {'keb':'隱くす'}]
         self.m_check_matches(k_ele, 'entry_ent_seq', ent_seq, 4, expect)
         
         inf_n = [0, 1, 0, 2]
@@ -94,7 +94,7 @@ class TestKanjidicEntries(unittest.TestCase):
         
         expect = [{'reb':'ごみ', 're_nokanji':False},
                   {'reb':'ゴミ', 're_nokanji':True},
-                  {'reb':'あくた', 're_nokanji':False},]
+                  {'reb':'あくた', 're_nokanji':False}]
         self.m_check_matches(r_ele, 'entry_ent_seq', ent_seq, 3, expect)
         
         pri_n = [3, 1, 0]

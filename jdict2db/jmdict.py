@@ -342,6 +342,7 @@ def parse_sense(ent_seq, sense_pk, node):
             #but we need boolean values, so set to True
             if ls_wasei is not False:
                 ls_wasei = True
+                
             #xml:lang expands to that
             lang = s.get("{http://www.w3.org/XML/1998/namespace}lang", 'eng')
             lsource = s.text

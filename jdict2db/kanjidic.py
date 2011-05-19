@@ -280,7 +280,7 @@ def fill_database(db_path=None):
     n_to_commit = 0
     save_all()
 
-    print 'Filling database with KANJIDIC12 data took '\
+    print 'Filling database with KANJIDIC2 data took '\
           ' %s seconds' % (time.time() - start)
     print "Done."
     f.close()

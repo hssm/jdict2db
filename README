@@ -1,7 +1,35 @@
-The purpose of this project is to create database representations of various
-Japanese-English dictionaries that are provided as XML files.
+This project creates database representations of various Japanese-English
+dictionaries that are provided as XML files.
+ 
+The dictionaries used are the work of Jim Breen. More information can be found
+at their respective pages:
 
-The dictionaries used are the work of Jim Breen
-(http://www.csse.monash.edu.au/~jwb/japanese.html). Presently, KANJIDIC2 and
-JMdict are supported by this project. JMnedict (Japanese Proper Names
-Dictionary) will be added soon.
+KANJIDIC2 page: http://www.csse.monash.edu.au/~jwb/kanjidic2/
+JMdict page: http://www.csse.monash.edu.au/~jwb/jmdict.html
+
+License information can be found in the file COPYING.
+
+Presently, KANJIDIC2 and JMdict are supported by this project. JMnedict
+(Japanese Proper Names Dictionary) will be added soon.
+
+Requirements
+---------------------
+python 2.x
+sqlalchemy (only tested with 0.6.7)
+    
+    
+Usage
+---------------
+The dictionary files are automatically downloaded and extracted for you.
+
+Simply run jdict2db/jmdict.py or jdict2db/kanjidic.py with a python interpreter.
+E.g., from the directory of this file, do:
+
+$ python jdict2db/jmdict.py
+
+to generate a database named jdict.sqlite in the current directory. For
+kanjidic, do
+
+$ python jdict2db/kanjidic.py
+
+to generate a database named kanjidic.sqlite in the current directory.

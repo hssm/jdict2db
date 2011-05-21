@@ -167,7 +167,7 @@ def parse_misc(literal, node):
         elif m.tag == "variant":
             variant_l.append({'character_literal':literal,
                               'variant':m.text,
-                              'var_type':m.get("var_type")})                            
+                              'var_type':m.get("var_type")})
         elif m.tag == "freq":
             freq = m.text
         elif m.tag == "rad_name":

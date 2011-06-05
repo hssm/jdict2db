@@ -38,7 +38,7 @@ all_l.append([entry_l, entry.insert()])
 k_ele = Table('k_ele', metadata,
                     Column('id', Integer, primary_key=True),
                     Column('entry_ent_seq', Integer, ForeignKey('entry.ent_seq')),
-                    Column('keb', Unicode))
+                    Column('keb', Unicode, index=True))
 k_ele_l = []
 all_l.append([k_ele_l, k_ele.insert()])
                   
@@ -58,16 +58,16 @@ all_l.append([ke_pri_l, ke_pri.insert()])
 
 r_ele = Table('r_ele', metadata,
                     Column('id', Integer, primary_key=True),
-                    Column('entry_ent_seq', Integer, ForeignKey('entry.ent_seq')),
-                    Column('reb', Unicode),
+                    Column('entry_ent_seq', Integer, ForeignKey('entry.ent_seq'), index=True),
+                    Column('reb', Unicode, index=True),
                     Column('re_nokanji', Boolean))
 r_ele_l = []
 all_l.append([r_ele_l, r_ele.insert()])
 
 re_restr = Table('re_restr', metadata,
                     Column('id', Integer, primary_key=True),
-                    Column('r_ele_id', Integer, ForeignKey('r_ele.id')),
-                    Column('re_restr', Unicode))
+                    Column('r_ele_id', Integer, ForeignKey('r_ele.id'), index=True),
+                    Column('keb', Unicode))
 re_restr_l = []
 all_l.append([re_restr_l, re_restr.insert()])
 
@@ -255,7 +255,7 @@ def parse_r_ele(ent_seq, r_ele_pk, node):
             re_nokanji = True
         elif r.tag == "re_restr":
             re_restr_l.append({'r_ele_id':r_ele_pk,
-                               're_restr':unicode(r.text)})
+                               'keb':unicode(r.text)})
         elif r.tag == "re_inf":
             re_inf_l.append({'r_ele_id':r_ele_pk,
                              're_inf':unicode(r.text)})
@@ -389,7 +389,7 @@ def fill_database(db_path):
     metadata.create_all(engine)
     conn = engine.connect()
     
-    print "Filling database with JMdict data. This takes about 35 seconds..."
+    print "Filling database with JMdict data. This takes about 40 seconds..."
     start = time.time()
     
     #Primary keys of tables that are used as foreign keys by sub-element

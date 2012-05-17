@@ -4,7 +4,7 @@ look into the JMdictDB project:
 http://www.edrdg.org/wiki/index.php/JMdictDB_Project
 
 This project creates database representations of various Japanese-English
-dictionaries that are provided as XML files.
+dictionaries that are originally distributed as XML files.
  
 The dictionaries used are the work of Jim Breen. More information can be found
 at their respective pages:
@@ -21,13 +21,18 @@ Requirements
 ---------------------
 python 2.x
 sqlalchemy (only tested with 0.6.7)
-    
+
+TODO
+---------------------
+Insertions are reliant on correct (list) ordering, which could change at any
+time. I need to fix this. Performance can be enhanced significantly with proper
+use of transactions, but it's a very low priority goal right now.
     
 Usage
 ---------------
-The dictionary files are automatically downloaded and extracted for you.
+The XML dictionary files are automatically downloaded and extracted for you.
 
-Simply run jdict2db/jmdict.py or jdict2db/kanjidic.py with a python interpreter.
+Simply run jdict2db/jmdict.py or jdict2db/kanjidic.py with a python2 interpreter.
 E.g., from the directory of this file, do:
 
 $ python jdict2db/jmdict.py

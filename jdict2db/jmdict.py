@@ -227,7 +227,7 @@ def save_all():
         table_l = list[0]
         insert = list[1]
         
-        if len(table_l) > n_to_commit:
+        if len(table_l) > 0:
             conn.execute(insert, table_l)
             del table_l[:]  #empty the list after committing it
             
@@ -397,7 +397,7 @@ def fill_database(db_path):
     sense_pk = 0
     
     #Call save_all() after n_to_save elements. This shaves off a few seconds.
-    n_to_save = 5000
+    n_to_save = 15000
     save_now = 0
     for event, elem in iterparse(f):
         if elem.tag == "entry":

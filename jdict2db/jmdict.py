@@ -221,7 +221,7 @@ all_l.append([example_l, example.insert()])
 def save_all():
     """
     Commit data held in each table_l list.
-    Only commit if the list has more than n_to_commit pending rows.
+    Avoid trying to commit an empty list.
     """
     for list in all_l:
         table_l = list[0]
@@ -380,16 +380,12 @@ def fill_database(db_path):
     
     global conn
 
-    if not os.path.exists(JMDICT_PATH):
-        print "JMdict not found. Downloading..."
-        download.download_jmdict()
-        
     engine = create_engine(db_path, echo=False)
     f = open(JMDICT_PATH)
     metadata.create_all(engine)
     conn = engine.connect()
     
-    print "Filling database with JMdict data. This takes about 40 seconds..."
+    print "Filling database with JMdict data. This takes a while..."
     start = time.time()
     
     #Primary keys of tables that are used as foreign keys by sub-element
@@ -440,14 +436,23 @@ def fill_database(db_path):
     f.close()
     conn.close()
     
+
+def download_dictionary():
+    if not os.path.exists(JMDICT_PATH):
+        print "JMdict not found. Downloading..."
+        download.download_jmdict()
+
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         db_url = sys.argv[1]
-        fill_database(db_url)
     else:
+        db_url = 'sqlite:///jmdict.sqlite'
+        
         print 'Database url not specified. Creating new SQLite database'\
-        ', "jmdict.sqlite", here.'
+              ', "jmdict.sqlite", here.'
+              
         if os.path.exists('jmdict.sqlite'):
             print 'Overwriting existing database named jmdict.sqlite'
             os.remove('jmdict.sqlite')
-        fill_database('sqlite:///jmdict.sqlite')
+    download_dictionary()
+    fill_database(db_url)

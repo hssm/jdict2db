@@ -10,6 +10,7 @@ from sqlalchemy import create_engine, Table, Column, Integer, String, Unicode,\
                        ForeignKey, MetaData
 import download
 
+
 KANJIDIC2_PATH = '../data/kanjidic2.xml'
 
 metadata = MetaData()
@@ -141,10 +142,11 @@ nanori_l = []
 all_l.append([nanori_l, nanori.insert()])
 
 
+
 def save_all():
     """
     Commit data held in each table_l list.
-    Only commit if the list has more than n_to_commit pending rows.
+    Avoid trying to commit an empty list.
     """
     for list in all_l:
         table_l = list[0]
@@ -233,21 +235,17 @@ def fill_database(db_path=None):
     """Fill the supplied database with kanjidic data."""
     
     global conn
-
-    if not os.path.exists(KANJIDIC2_PATH):
-        print "kanjidic2.xml not found. Downloading..."
-        download.download_kanjidic2()
                 
     engine = create_engine(db_path, echo=False)
     f = open(KANJIDIC2_PATH)    
     metadata.create_all(engine)
-    conn = engine.connect()    
+    conn = engine.connect()
     
-    print "Filling database with KANJIDIC2 data. This takes about 8 seconds."
+    print "Filling database with KANJIDIC2 data. This takes a while..."
     start = time.time()
     
     #Call save_all() after n_to_save elements. Slight speedup
-    n_to_save = 5000
+    n_to_save = 2000
     save_now = 0
     for event, elem in iterparse(f):
         literal = None
@@ -276,24 +274,32 @@ def fill_database(db_path=None):
             elem.clear() #free memory of no longer needed nodes
     
     #ensure the leftover rows are saved
-    global n_to_commit
-    n_to_commit = 0
     save_all()
 
     print 'Filling database with KANJIDIC2 data took '\
           ' %s seconds' % (time.time() - start)
     print "Done."
+
     f.close()
     conn.close()
+    
+
+def download_dictionary():
+    if not os.path.exists(KANJIDIC2_PATH):
+        print "kanjidic2.xml not found. Downloading..."
+        download.download_kanjidic2()
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         db_url = sys.argv[1]
-        fill_database(db_url)
     else:
+        db_url = 'sqlite:///kanjidic.sqlite'
+        
         print 'Database url not specified. Creating new SQLite database'\
-        ', "kanjidic.sqlite", here.'
+              ', "kanjidic.sqlite", here.'
+        
         if os.path.exists('kanjidic.sqlite'):
             print 'Overwriting existing database named kanjidic.sqlite'
             os.remove('kanjidic.sqlite')
-        fill_database('sqlite:///kanjidic.sqlite')
+    download_dictionary()
+    fill_database(db_url)

@@ -8,7 +8,7 @@ import time
 from xml.etree.cElementTree import iterparse
 from sqlalchemy import create_engine, Table, Column, Integer, String, Unicode,\
                        Boolean, ForeignKey, MetaData
-import download
+from . import download
 
 JMDICT_PATH = '../data/JMdict'
 
@@ -250,15 +250,15 @@ def parse_r_ele(ent_seq, r_ele_pk, node):
     re_nokanji = False
     for r in node:
         if r.tag == "reb":
-            reb = unicode(r.text)
+            reb = str(r.text)
         elif r.tag == "re_nokanji":
             re_nokanji = True
         elif r.tag == "re_restr":
             re_restr_l.append({'r_ele_id':r_ele_pk,
-                               'keb':unicode(r.text)})
+                               'keb':str(r.text)})
         elif r.tag == "re_inf":
             re_inf_l.append({'r_ele_id':r_ele_pk,
-                             're_inf':unicode(r.text)})
+                             're_inf':str(r.text)})
         elif r.tag == "re_pri":
             re_pri_l.append({'r_ele_id':r_ele_pk,
                              're_pri':r.text})
@@ -286,6 +286,7 @@ def parse_info(ent_seq, info_pk, node):
                             'link_uri':link_uri})
         elif i.tag == "bibl":
             for b in i:
+                #FIXME: pretty sure this is a bug, but we have no bib info anyway
                 bib_tag = None
                 bib_txt = None
                 if b.tag == "bib_tag":
@@ -315,19 +316,19 @@ def parse_sense(ent_seq, sense_pk, node):
     for s in node:
         if s.tag == "stagk":
             stagk_l.append({'sense_id':sense_pk,
-                            'stagk':unicode(s.text)})
+                            'stagk':str(s.text)})
         elif s.tag == "stagr":
             stagr_l.append({'sense_id':sense_pk,
-                            'stagr':unicode(s.text)})
+                            'stagr':str(s.text)})
         elif s.tag == "pos":
             pos_l.append({'sense_id':sense_pk,
                           'pos':s.text})
         elif s.tag == "xref":
             xref_l.append({'sense_id':sense_pk,
-                           'xref':unicode(s.text)})
+                           'xref':str(s.text)})
         elif s.tag == "ant":
             ant_l.append({'sense_id':sense_pk,
-                          'ant':unicode(s.text)})
+                          'ant':str(s.text)})
         elif s.tag == "field":
             field_l.append({'sense_id':sense_pk,
                             'field':s.text})
@@ -336,7 +337,7 @@ def parse_sense(ent_seq, sense_pk, node):
                            'misc':s.text})
         elif s.tag == "s_inf":
             s_inf_l.append({'sense_id':sense_pk,
-                            's_inf':unicode(s.text)})
+                            's_inf':str(s.text)})
         elif s.tag == "lsource":
             ls_type = s.get("ls_type", 'full')
             ls_wasei = s.get("ls_wasei", False)
@@ -353,7 +354,7 @@ def parse_sense(ent_seq, sense_pk, node):
             #this is necessary because doing unicode(None)
             #returns something that isn't None
             if lsource is not None: 
-                lsource = unicode(lsource)
+                lsource = str(lsource)
             lsource_l.append({'sense_id':sense_pk,
                               'lsource':lsource,
                               'lang':lang,
@@ -366,12 +367,12 @@ def parse_sense(ent_seq, sense_pk, node):
             lang = s.get("{http://www.w3.org/XML/1998/namespace}lang", 'eng')
             g_gend = s.get("g_gend", None)  
             gloss_l.append({'sense_id':sense_pk,
-                            'gloss':unicode(s.text),
+                            'gloss':str(s.text),
                             'lang':lang,
                             'g_gend':g_gend})
         elif s.tag == "example":
             example_l.append({'sense_id':sense_pk,
-                              'example':unicode(s.text)})
+                              'example':str(s.text)})
     sense_l.append({'entry_ent_seq': ent_seq})
     
     
@@ -385,7 +386,7 @@ def fill_database(db_path):
     metadata.create_all(engine)
     conn = engine.connect()
     
-    print "Filling database with JMdict data. This takes a while..."
+    print("Filling database with JMdict data. This takes a while...")
     start = time.time()
     
     #Primary keys of tables that are used as foreign keys by sub-element
@@ -430,16 +431,16 @@ def fill_database(db_path):
     n_to_commit = 0
     save_all()
     
-    print 'Filling database with JMdict data took '\
-          '%s seconds' % (time.time() - start)
-    print "Done."
+    print('Filling database with JMdict data took '
+          '%s seconds', (time.time() - start))
+    print("Done.")
     f.close()
     conn.close()
     
 
 def download_dictionary():
     if not os.path.exists(JMDICT_PATH):
-        print "JMdict not found. Downloading..."
+        print("JMdict not found. Downloading...")
         download.download_jmdict()
 
 if __name__ == '__main__':
@@ -448,11 +449,11 @@ if __name__ == '__main__':
     else:
         db_url = 'sqlite:///jmdict.sqlite'
         
-        print 'Database url not specified. Creating new SQLite database'\
-              ', "jmdict.sqlite", here.'
+        print('Database url not specified. Creating new SQLite database'
+              ', "jmdict.sqlite", here.')
               
         if os.path.exists('jmdict.sqlite'):
-            print 'Overwriting existing database named jmdict.sqlite'
+            print('Overwriting existing database named jmdict.sqlite')
             os.remove('jmdict.sqlite')
     download_dictionary()
     fill_database(db_url)

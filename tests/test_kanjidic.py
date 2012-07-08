@@ -15,7 +15,7 @@ CONNECT_STRING = 'sqlite:///' + TEST_DB_PATH
 #Set this to True to create a database which will be reused in future tests
 #while kept True. You'll have to delete it manually from the test_dbs folder
 #if you need to rebuild it.
-reuse_db = False
+reuse_db = True
 
 if not os.path.isdir(TEST_DIR):
     os.makedirs(TEST_DIR)
@@ -45,19 +45,19 @@ class TestKanjidicEntries(unittest.TestCase):
                                                             len(rows)))
 
         for (expect_row, result_row) in zip(expect_list, rows):
-            for key in expect_row.keys():
+            for key in list(expect_row.keys()):
                 self.assertTrue(expect_row[key] == result_row[key],
                                  "%s error. Expected %s but found %s." %
                                   (key, expect_row[key], result_row[key]))
                 
     def test_character(self):
-        literal = u'今'
+        literal = '今'
         expect= [{'literal':'今', 'grade':2, 'freq':49, 'jlpt':4}]
         self.m_check_matches(character, 'literal', literal, 1,
                              expect)
        
     def test_stroke_count(self):
-        literal = u'収'
+        literal = '収'
         s = select([stroke_count],stroke_count.c.character_literal==literal)
         result = conn.execute(s)
         rows = result.fetchall()        
@@ -70,7 +70,7 @@ class TestKanjidicEntries(unittest.TestCase):
                              expect)
 
     def test_variant(self):
-        literal = u'穐'
+        literal = '穐'
         s = select([variant], variant.c.character_literal==literal)
         result = conn.execute(s)
         rows = result.fetchall()
@@ -83,7 +83,7 @@ class TestKanjidicEntries(unittest.TestCase):
                              expect)
         
     def test_rad_name(self):
-        literal = u'禾'
+        literal = '禾'
         s = select([rad_name], rad_name.c.character_literal==literal)
         result = conn.execute(s)
         rows = result.fetchall()       
@@ -97,7 +97,7 @@ class TestKanjidicEntries(unittest.TestCase):
         result.close()
         
     def test_dic_ref(self):
-        literal = u'苛'
+        literal = '苛'
         s = select([dic_ref], dic_ref.c.character_literal==literal)
         result = conn.execute(s)
         rows = result.fetchall()
@@ -116,7 +116,7 @@ class TestKanjidicEntries(unittest.TestCase):
                              expect)
     
     def test_query_code(self):
-        literal = u'苛'
+        literal = '苛'
         s = select([query_code], query_code.c.character_literal==literal)
         result = conn.execute(s)
         rows = result.fetchall()
@@ -134,7 +134,7 @@ class TestKanjidicEntries(unittest.TestCase):
                              expect)            
 
     def test_codepoint(self):
-        literal = u'嘩'
+        literal = '嘩'
         s = select([codepoint], codepoint.c.character_literal==literal)
         result = conn.execute(s)
         rows = result.fetchall()
@@ -146,7 +146,7 @@ class TestKanjidicEntries(unittest.TestCase):
                              expect)            
         
     def test_rad_value(self):
-        literal = u'愛'
+        literal = '愛'
         s = select([rad_value], rad_value.c.character_literal==literal)
         result = conn.execute(s)
         rows = result.fetchall()
@@ -162,7 +162,7 @@ class TestKanjidicEntries(unittest.TestCase):
         #TODO: insert such cases in a test file in order to test the parsing 
         #behaviour
         
-        literal = u'綻'
+        literal = '綻'
         s = select([reading], reading.c.character_literal==literal)
         result = conn.execute(s)
         rows = result.fetchall()
@@ -183,7 +183,7 @@ class TestKanjidicEntries(unittest.TestCase):
                              expect)
 
     def test_meaning(self):
-        literal = u'歩'
+        literal = '歩'
         s = select([meaning], meaning.c.character_literal==literal)
         result = conn.execute(s)
         rows = result.fetchall()
@@ -204,7 +204,7 @@ class TestKanjidicEntries(unittest.TestCase):
                              expect)
 
     def test_nanori(self):
-        literal = u'胆'
+        literal = '胆'
         s = select([nanori], nanori.c.character_literal==literal)
         result = conn.execute(s)
         rows = result.fetchall()

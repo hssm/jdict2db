@@ -8,7 +8,7 @@ import sys
 from xml.etree.cElementTree import iterparse
 from sqlalchemy import create_engine, Table, Column, Integer, String, Unicode,\
                        ForeignKey, MetaData
-import download
+from . import download
 
 
 KANJIDIC2_PATH = '../data/kanjidic2.xml'
@@ -174,7 +174,7 @@ def parse_misc(literal, node):
             freq = m.text
         elif m.tag == "rad_name":
             rad_name_l.append({'character_literal':literal,
-                               'rad_name':unicode(m.text)})
+                               'rad_name':str(m.text)})
         elif m.tag == "jlpt":
             jlpt = m.text
     
@@ -194,7 +194,7 @@ def parse_dic_number(literal, node):
 def parse_query_code(literal, node):
     for q in node:
         query_code_l.append({'character_literal':literal,
-                             'q_code':unicode(q.text),
+                             'q_code':q.text,
                              'qc_type':q.get("qc_type"),
                              'skip_misclass':q.get("skip_misclass")})
         
@@ -204,7 +204,7 @@ def parse_reading_meaning(literal, node):
             for rmg in rm:
                 if rmg.tag == "reading":
                     reading_l.append({'character_literal':literal,
-                                      'reading':unicode(rmg.text),
+                                      'reading':str(rmg.text),
                                       'r_type':rmg.get("r_type"),
                                       'on_type':rmg.get("on_type"),
                                       'r_status':rmg.get("r_status")})
@@ -213,11 +213,11 @@ def parse_reading_meaning(literal, node):
                     if m_lang is None:
                         m_lang = "en"
                     meaning_l.append({'character_literal':literal,
-                                      'meaning':unicode(rmg.text),
+                                      'meaning':str(rmg.text),
                                       'm_lang':m_lang}) 
         elif rm.tag == "nanori":
             nanori_l.append({'character_literal':literal,
-                             'nanori':unicode(rm.text)})
+                             'nanori':str(rm.text)})
 
 def parse_radical(literal, node):
     for r in node:
@@ -241,7 +241,7 @@ def fill_database(db_path=None):
     metadata.create_all(engine)
     conn = engine.connect()
     
-    print "Filling database with KANJIDIC2 data. This takes a while..."
+    print("Filling database with KANJIDIC2 data. This takes a while...")
     start = time.time()
     
     #Call save_all() after n_to_save elements. Slight speedup
@@ -252,7 +252,7 @@ def fill_database(db_path=None):
         if elem.tag == "character":
             for e in elem:
                 if e.tag == "literal":
-                    literal = unicode(e.text)
+                    literal = e.text
                 elif e.tag == "codepoint":
                     parse_codepoint(literal, e)
                 elif e.tag == "radical":
@@ -276,9 +276,9 @@ def fill_database(db_path=None):
     #ensure the leftover rows are saved
     save_all()
 
-    print 'Filling database with KANJIDIC2 data took '\
-          ' %s seconds' % (time.time() - start)
-    print "Done."
+    print(('Filling database with KANJIDIC2 data took '
+          ' %s seconds' % (time.time() - start)))
+    print("Done.")
 
     f.close()
     conn.close()
@@ -286,7 +286,7 @@ def fill_database(db_path=None):
 
 def download_dictionary():
     if not os.path.exists(KANJIDIC2_PATH):
-        print "kanjidic2.xml not found. Downloading..."
+        print("kanjidic2.xml not found. Downloading...")
         download.download_kanjidic2()
 
 if __name__ == '__main__':
@@ -295,11 +295,11 @@ if __name__ == '__main__':
     else:
         db_url = 'sqlite:///kanjidic.sqlite'
         
-        print 'Database url not specified. Creating new SQLite database'\
-              ', "kanjidic.sqlite", here.'
+        print('Database url not specified. Creating new SQLite database'
+              ', "kanjidic.sqlite", here.')
         
         if os.path.exists('kanjidic.sqlite'):
-            print 'Overwriting existing database named kanjidic.sqlite'
+            print('Overwriting existing database named kanjidic.sqlite')
             os.remove('kanjidic.sqlite')
     download_dictionary()
     fill_database(db_url)

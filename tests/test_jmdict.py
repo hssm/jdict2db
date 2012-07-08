@@ -15,7 +15,7 @@ CONNECT_STRING = 'sqlite:///' + TEST_DB_PATH
 #Set this to True to create a database which will be reused in future tests
 #while kept True. You'll have to delete it manually from the test_dbs folder
 #if you need to rebuild it.
-reuse_db = False
+reuse_db = True
 
 if not os.path.isdir(TEST_DIR):
     os.makedirs(TEST_DIR)
@@ -44,7 +44,7 @@ class TestKanjidicEntries(unittest.TestCase):
                                                               len(rows)))
 
         for (expect_row, result_row) in zip(expect_list, rows):
-            for key in expect_row.keys():
+            for key in list(expect_row.keys()):
                 self.assertTrue(expect_row[key] == result_row[key],
                                  "%s error. Expected %s but found %s." %
                                   (key, expect_row[key], result_row[key]))
@@ -103,7 +103,7 @@ class TestKanjidicEntries(unittest.TestCase):
         pri_expect = [[{'re_pri':'ichi1'},
                        {'re_pri':'news2'},
                        {'re_pri':'nf36'}],
-                      [{'re_pri':'gai1'}],
+                      [{'re_pri':'spec1'}],
                       [{}]]
         
         restr_n = [0, 0, 1]

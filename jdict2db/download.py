@@ -2,7 +2,8 @@
 #Copyright (C) 2011 Houssam Salem <ntsp.gm@gmail.com>
 #License: GPLv3; http://www.gnu.org/licenses/gpl.txt
 
-import urllib2
+from urllib.request import urlopen
+from urllib.error import HTTPError
 import os
 import gzip
 
@@ -17,30 +18,30 @@ def download_jmdict():
             os.makedirs('../data/')
     
         #Download and save the compressed file
-        print "Downloading JMdict.gz...",
-        url = urllib2.urlopen(JMDICT_URL)
+        print("Downloading JMdict.gz...", end=" ")
+        url = urlopen(JMDICT_URL)
         dic_gz = open('../data/JMdict.gz', 'wb')
         dic_gz.write(url.read())
         dic_gz.close()
-        print "Done"
+        print("Done")
         
         #uncompress the file
-        print "Extracting...",
+        print("Extracting...", end=" ")
         dic_gz = gzip.GzipFile('../data/JMdict.gz')
         dic = open('../data/JMdict', 'wb')
         dic.write(dic_gz.read())
         dic_gz.close()
         dic.close()
-        print "Done."
+        print("Done.")
         
         #delete unneeded compressed file
-        print "Removing compressed file JMdict.gz...",
+        print("Removing compressed file JMdict.gz...", end=" ")
         os.remove('../data/JMdict.gz')
-        print "Done"
-    except urllib2.HTTPError, e:
-        print "Failed to download JMdict.gz: ", e
-    except IOError, e:
-        print "Failed to save or extract JMdict.gz: ", e
+        print("Done")
+    except HTTPError as e:
+        print("Failed to download JMdict.gz: ", e)
+    except IOError as e:
+        print("Failed to save or extract JMdict.gz: ", e)
 
     
 def download_kanjidic2():
@@ -51,30 +52,30 @@ def download_kanjidic2():
 
     try:
         #Download and save the compressed file
-        print "Downloading kanjidic2.xml.gz...",
-        url = urllib2.urlopen(KANJIDIC2_URL)
+        print("Downloading kanjidic2.xml.gz...", end=" ")
+        url = urlopen(KANJIDIC2_URL)
         dic_gz = open('../data/kanjidic2.xml.gz', 'wb')
         dic_gz.write(url.read())
         dic_gz.close()
-        print "Done"
+        print("Done")
         
         #uncompress the file
-        print "Extracting...",
+        print("Extracting...", end=" ")
         dic_gz = gzip.GzipFile('../data/kanjidic2.xml.gz')
         dic = open('../data/kanjidic2.xml', 'wb')
         dic.write(dic_gz.read())
         dic_gz.close()
         dic.close()
-        print "Done."
+        print("Done.")
         
         #delete unneeded compressed file
-        print "Removing compressed file kanjidic2.xml.gz...",
+        print("Removing compressed file kanjidic2.xml.gz...", end=" ")
         os.remove('../data/kanjidic2.xml.gz')
-        print "Done"
-    except urllib2.HTTPError, e:
-        print "Failed to download kanjidic2.xml.gz: ", e
-    except IOError, e:
-        print "Failed to save or extract kanjidic2.xml.gz: ", e
+        print("Done")
+    except HTTPError as e:
+        print("Failed to download kanjidic2.xml.gz: ", e)
+    except IOError as e:
+        print("Failed to save or extract kanjidic2.xml.gz: ", e)
 
 
 if __name__ == '__main__':    
